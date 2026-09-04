@@ -18,18 +18,18 @@ fluxbox &
 FLUXBOX_PID=$!
 echo "Fluxbox started with PID: $FLUXBOX_PID"
 
+# Wait for fluxbox to initialize
+sleep 2
+
+# Launch Firefox in the background
+firefox --new-window https://www.google.com &
+FIREFOX_PID=$!
+echo "Firefox started with PID: $FIREFOX_PID"
+
 # Start x11vnc server
 x11vnc -display $DISPLAY -forever -nopw -shared -rfbport 5900 &
 X11VNC_PID=$!
 echo "x11vnc started with PID: $X11VNC_PID"
-
-# Wait a bit for the desktop to be ready
-sleep 3
-
-# Launch Firefox with a specific page (optional)
-firefox --new-window https://www.google.com &
-FIREFOX_PID=$!
-echo "Firefox started with PID: $FIREFOX_PID"
 
 # Start noVNC web client on Render's PORT
 websockify --web /usr/share/novnc/ 0.0.0.0:$PORT localhost:5900 &
@@ -38,7 +38,6 @@ echo "websockify started on port $PORT with PID: $WEBSOCKIFY_PID"
 
 echo "All services started successfully!"
 echo "Access your VNC at: http://localhost:$PORT/vnc.html"
-echo "Firefox should be open in the desktop"
 
 # Keep the container running
 wait $WEBSOCKIFY_PID
