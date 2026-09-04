@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies
+# Install dependencies including Firefox
 RUN apt-get update && apt-get install -y \
     xvfb \
     x11vnc \
@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     tigervnc-standalone-server \
     tigervnc-common \
     net-tools \
+    firefox \
     && rm -rf /var/lib/apt/lists/*
 
 # Create working directory
@@ -22,6 +23,7 @@ WORKDIR /app
 # Copy configuration files
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start.sh /app/start.sh
+COPY menu.lua /root/.fluxbox/menu  # Optional: Custom Fluxbox menu
 
 # Make start script executable
 RUN chmod +x /app/start.sh
@@ -33,5 +35,4 @@ ENV DISPLAY=:99
 # Expose port
 EXPOSE $PORT
 
-# Start supervisord
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
