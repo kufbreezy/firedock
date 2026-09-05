@@ -21,10 +21,24 @@ echo "Fluxbox started with PID: $FLUXBOX_PID"
 # Wait for fluxbox to initialize
 sleep 2
 
-# Launch Firefox in the background
-firefox --new-window https://www.google.com &
-FIREFOX_PID=$!
-echo "Firefox started with PID: $FIREFOX_PID"
+# Check if firefox or firefox-esr is installed
+if command -v firefox-esr &> /dev/null; then
+    FIREFOX_CMD="firefox-esr"
+elif command -v firefox &> /dev/null; then
+    FIREFOX_CMD="firefox"
+else
+    echo "Error: Firefox not found!"
+    FIREFOX_CMD=""
+fi
+
+# Launch Firefox if available
+if [ -n "$FIREFOX_CMD" ]; then
+    $FIREFOX_CMD --new-window https://www.google.com &
+    FIREFOX_PID=$!
+    echo "Firefox started with PID: $FIREFOX_PID"
+else
+    echo "Firefox not installed, skipping..."
+fi
 
 # Start x11vnc server
 x11vnc -display $DISPLAY -forever -nopw -shared -rfbport 5900 &
