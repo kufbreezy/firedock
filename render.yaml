@@ -4,9 +4,14 @@ services:
     env: docker
     dockerfilePath: ./Dockerfile
     plan: free
+    # Tell Render exactly which port the web UI will listen on
     envVars:
       - key: PORT
-        value: 10000          # Render default; image will use WEB_LISTENING_PORT=$PORT
+        value: "10000"
+      - key: WEB_LISTENING_PORT
+        value: "10000"          # critical – must match PORT
+      - key: VNC_LISTENING_PORT
+        value: "-1"             # disable the pure-VNC port so health-checks never hit it
       - key: FF_OPEN_URL
         value: https://www.google.com
       - key: DARK_MODE
@@ -15,3 +20,9 @@ services:
         value: "1"
       - key: WEB_FILE_MANAGER
         value: "1"
+      - key: DISPLAY_WIDTH
+        value: "1280"
+      - key: DISPLAY_HEIGHT
+        value: "720"
+    # Optional but recommended – give the health-check an HTTP path
+    healthCheckPath: /
