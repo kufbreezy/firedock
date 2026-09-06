@@ -1,13 +1,3 @@
-# services:
-#   - type: web
-#     name: firedock
-#     env: docker
-#     dockerfilePath: ./Dockerfile
-#     plan: free
-#     envVars:
-#       - key: PORT
-#         value: 10000
-
 services:
   - type: web
     name: firedock
@@ -16,6 +6,12 @@ services:
     plan: free
     envVars:
       - key: PORT
-        value: 5800
+        value: 10000          # Render default; image will use WEB_LISTENING_PORT=$PORT
       - key: FF_OPEN_URL
         value: https://www.google.com
+      - key: DARK_MODE
+        value: "1"
+      - key: WEB_AUDIO
+        value: "1"
+      - key: WEB_FILE_MANAGER
+        value: "1"
