@@ -1,12 +1,17 @@
-FROM dorowu/ubuntu-desktop-lxde-vnc
+FROM jlesage/firefox
 
-# Install Firefox
-RUN apt-get update && apt-get install -y firefox
+# Set Render port (the container uses 5800 internally)
+ENV PORT=5800
 
-# Set Render port
-ENV PORT=10000
+# Launch Firefox with Google as homepage
+ENV FF_OPEN_URL=https://www.google.com
 
-# Start everything directly - no start.sh needed!
+# Optional: Enable audio support
+# ENV WEB_AUDIO=1
+
+# Optional: Enable file manager
+# ENV WEB_FILE_MANAGER=1
+
+# Override the default command to bind to Render's PORT
 CMD websockify --web /usr/share/novnc/ 0.0.0.0:$PORT localhost:5900 & \
-    firefox --new-window https://www.google.com & \
     /usr/bin/supervisord
