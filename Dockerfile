@@ -1,17 +1,20 @@
 FROM jlesage/firefox
 
-# Render injects PORT (default 10000). Tell the image to listen on it.
-ENV WEB_LISTENING_PORT=$PORT
+# Runtime PORT is injected by Render.  We must set WEB_LISTENING_PORT
+# at *runtime*, not at build time.
+# The entrypoint of the base image already sources /etc/cont-env.d,
+# so we just make sure the variable is present.
 
-# Optional but useful defaults
+# Useful defaults (all of these are supported by the image)
 ENV FF_OPEN_URL=https://www.google.com
 ENV DARK_MODE=1
 ENV WEB_AUDIO=1
 ENV WEB_FILE_MANAGER=1
+ENV DISPLAY_WIDTH=1280
+ENV DISPLAY_HEIGHT=720
 
-# Optional Firefox prefs (examples)
+# Optional Firefox prefs
 ENV FF_PREF_HOMEPAGE=browser.startup.homepage=\"https://duckduckgo.com\"
-ENV FF_PREF_POPUPS=dom.disable_open_during_load=false
 
 # Do NOT override CMD / ENTRYPOINT.
-# The base image’s init system starts everything correctly.
+# The base image’s /init + supervisor already start everything correctly.
