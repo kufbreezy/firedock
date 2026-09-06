@@ -1,25 +1,12 @@
-FROM linuxserver/firefox:latest
+FROM dorowu/ubuntu-desktop-lxde-vnc
 
-# Install VNC support
-RUN apt-get update && apt-get install -y \
-    x11vnc \
-    fluxbox \
-    supervisor \
-    websockify \
-    novnc \
-    && rm -rf /var/lib/apt/lists/*
+# Install Firefox
+RUN apt-get update && apt-get install -y firefox
 
-# Create working directory
-WORKDIR /app
-
-# Copy configuration files
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Set environment variables
+# Set Render port
 ENV PORT=10000
-ENV DISPLAY=:99
 
-# Expose port
-EXPOSE $PORT
-
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start everything directly - no start.sh needed!
+CMD websockify --web /usr/share/novnc/ 0.0.0.0:$PORT localhost:5900 & \
+    firefox --new-window https://www.google.com & \
+    /usr/bin/supervisord
